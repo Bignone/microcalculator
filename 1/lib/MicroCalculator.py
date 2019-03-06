@@ -20,5 +20,6 @@ class MicroCalculator:
 
 
 if __name__ == "__main__":
+    print(os.__file__)
     M = MicroCalculator()
     print(M.calculate("2 + 2"))
