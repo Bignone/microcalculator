@@ -1,0 +1,5 @@
+name: microcalculator-env
+channels:
+  - defaults
+prefix: C:\ProgramData\Anaconda3\envs\microcalculator-env\envs\microcalculator-env
+
