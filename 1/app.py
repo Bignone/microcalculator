@@ -20,6 +20,7 @@ api = Api(app)
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
 VERSION = os.path.basename(os.path.dirname(__file__))
+BASE_ROOT = "/api/v{}".format(VERSION)
 
 global model # simple class to evaluate math expressions
 model = MicroCalculator()
@@ -28,16 +29,16 @@ model.version = VERSION
 print("Model: {}".format(model.__class__.__name__))
 print("Version: {}".format(VERSION))
 
-@app.route('/api/v{}/information'.format(VERSION), methods=['GET'])
+@app.route(BASE_ROOT + '/information', methods=['GET'])
 def get_version():
     return jsonify(model.getBasicInfo())
 
-@app.route('/api/v1/calculate', methods=['GET'])
+@app.route(BASE_ROOT + '/calculate', methods=['GET'])
 def get_status():
     return jsonify(dict(success=True))
 
 
-@app.route('/api/v1/calculate', methods=['POST'])
+@app.route(BASE_ROOT + '/calculate', methods=['POST'])
 def calculate():
     '''Processes the input txt document and returns the predicted classes and their probabilities'''
     body = request.get_json(force=True)
