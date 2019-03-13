@@ -12,7 +12,7 @@ import sys
 import logging
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
-from ..lib.MicroCalculator import MicroCalculator
+from lib.MicroCalculator import MicroCalculator
 
 app = Flask(__name__)
 api = Api(app)
