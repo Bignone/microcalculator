@@ -6,18 +6,23 @@ import os
 import sys
 import time
 import json
+from .ModelBase import ModelBase
 
-class MicroCalculator:
+class MicroCalculator(ModelBase):
 
     def __init__(self):
-        pass
+        super().__init__()
+        self.name = "Micro calculator"
+        self.version = 0
+        self.description = "Model to calculate math expressions"
+        self.more_info = 'Example: {"expression": "2 + 3 * 6"}'
 
     def calculate(self, expression):
         result = None
         try:
             result = eval(expression)
         except:
-            pass
+            result = "Not valid math expression"
         
         return result
 

@@ -23,11 +23,14 @@ VERSION = os.path.basename(os.path.dirname(__file__))
 
 global model # simple class to evaluate math expressions
 model = MicroCalculator()
+model.version = VERSION
 
 print("Model: {}".format(model.__class__.__name__))
 print("Version: {}".format(VERSION))
 
-
+@app.route('/api/v{}/information'.format(VERSION), methods=['GET'])
+def get_version():
+    return jsonify(model.getBasicInfo())
 
 @app.route('/api/v1/calculate', methods=['GET'])
 def get_status():
