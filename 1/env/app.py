@@ -12,66 +12,37 @@ import sys
 import logging
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
+from ..lib.MicroCalculator import MicroCalculator
 
 app = Flask(__name__)
 api = Api(app)
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
 
+VERSION = os.path.basename(os.path.dirname(__file__))
 
-global model, tokenizer, encoder, text_labels
+global model # simple class to evaluate math expressions
+model = MicroCalculator()
 
-with open(MODEL) as handle:
-    model = model_from_json(handle.read())
-    logging.info('Loaded model from {}'.format(MODEL))
-    # load weights into new model
-    model.load_weights(WEIGHTS)
-    logging.info('Loaded weights from {}'.format(WEIGHTS))
-
-with open(TOKENIZER, 'rb') as handle:
-    tokenizer = pickle.load(handle)
-    logging.info('Loaded tokenizer from {}'.format(TOKENIZER))
-
-with open(ENCODER, 'rb') as handle:
-    encoder = pickle.load(handle)
-    text_labels = encoder.classes_
-    logging.info('Loaded encoder from {}'.format(ENCODER))
-
-# keras inference has problems with flask
-graph = tf.get_default_graph()
+print("Model: {}".format(model.__class__.__name__))
+print("Version: {}".format(VERSION))
 
 
-@app.route('/api/v1/documents/classify', methods=['GET'])
+
+@app.route('/api/v1/calculate', methods=['GET'])
 def get_status():
     return jsonify(dict(success=True))
 
 
-@app.route('/api/v1/documents/classify', methods=['POST'])
-def classify():
+@app.route('/api/v1/calculate', methods=['POST'])
+def calculate():
     '''Processes the input txt document and returns the predicted classes and their probabilities'''
-    doc = request.get_json(force=True)
-    doc_id = doc['doc_id']
-    text = doc['rawtext']
-    X = tokenizer.texts_to_matrix([text], mode='tfidf')
+    body = request.get_json(force=True)
+    expression = body['expression']
 
-    # keras models' inference breaks when multi-threads in Flask
-    # check this: https://github.com/keras-team/keras/issues/2397#issuecomment-254919212
-    global graph
-    with graph.as_default():
-        prediction = model.predict(np.array(X))
+    result = model.calculate(expression)
 
-    top_indices = prediction[0].argsort()[-3:]
-    top_predictions = [dict(category=text_labels[i], probability=float(prediction[0][i])) for i in top_indices]
-    top_predictions.sort(key=lambda x: x['probability'], reverse=True)
-    return jsonify(dict(doc_id=doc_id, predictions=top_predictions))
-
-
-@app.route('/api/v1/documents/categories', methods=['POST'])
-def get_categories():
-    '''Returns a list of the categories recognized by the classifier'''
-    categories = list(text_labels)
-    return jsonify(dict(categories=list(text_labels)))
-
+    return jsonify(dict(expression=expression, result=result))
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -13,13 +13,11 @@ class MicroCalculator:
         pass
 
     def calculate(self, expression):
-        result = eval(expression)
+        result = None
+        try:
+            result = eval(expression)
+        except:
+            pass
         
         return result
 
-
-
-if __name__ == "__main__":
-    print(os.__file__)
-    M = MicroCalculator()
-    print(M.calculate("2 + 2"))
