@@ -1,4 +1,0 @@
-conda create -n microcalculator-env anaconda pip keras tensorflow -y
-conda activate microcalculator-env
-cd /env
-conda env export > environment.yml
