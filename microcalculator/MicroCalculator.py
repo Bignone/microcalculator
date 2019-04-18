@@ -26,3 +26,34 @@ class MicroCalculator(ModelBase):
         
         return result
 
+    def sumatory(self, values):
+        result = None
+        try:
+            total_sum = 0
+            for value in values:
+                total_sum += value
+            
+            result = total_sum
+
+        except:
+            result = "Not valid values"
+        
+        return result
+
+    def multiply(self, values):
+        result = None
+        try:
+            total_mul = 1
+            for value in values:
+                total_mul *= value
+            
+            result = total_mul
+
+        except:
+            result = "Not valid values"
+        
+        return result
+
+            
+        
+

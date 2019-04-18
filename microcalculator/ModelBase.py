@@ -1,3 +1,4 @@
+import time
 
 class ModelBase:
 
@@ -10,6 +11,7 @@ class ModelBase:
         self.version = version
         self.description = description
         self.more_info = more_info
+        self.created_at = time.time()
 
     def predict(self): 
         raise NotImplementedError
